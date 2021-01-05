@@ -25,6 +25,18 @@ class Data:
         self.data1 = data1
         self.data2 = data2
 
+    @staticmethod
+    def ask():
+        return Data(
+                input('filename?: '),
+                input('')
+                )
+
     def listize(self):
-        df1 = list(self.data1.values.flatten())
-        df2 = list(self.data2.values.flatten())
+        datalist1 = list(self.data1.values.flatten())
+        datalist2 = list(self.data2.values.flatten())
+
+
+class SdJudge:
+    def is_normal_dist(self, data):
+        if Data.listize.
