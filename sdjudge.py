@@ -37,52 +37,56 @@ class SdJudge:
 
 
 
-    def is_normal_dist(self, datalist1, datalist2, user_p):
-        result_1 = stats.shapiro(datalist1)
-        judge_1 = bool(result_1[1] > user_p)
-        result_2 = stats.shapiro(datalist2)
-        judge_2 = bool(result_2[1] > user_p)
+    def is_normal_dist(self):
+        result_1 = stats.shapiro(self.datalist1)
+        judge_1 = bool(result_1[1] > self.user_p)
+        result_2 = stats.shapiro(self.datalist2)
+        judge_2 = bool(result_2[1] > self.user_p)
         judge = bool(judge_1 and judge_2) # if judge_1 and judge_2 is true, judge is true. otherwise False.
         return judge_1, judge_2, judge
 
 
-    def variance_bartlett(self, datalist1, datalist2, user_p):
-        result = stats.bartlett(datalist1, datalist2)
-        judge = bool(result[1] > user_p)
+    def variance_bartlett(self):
+        result = stats.bartlett(self.datalist1, self.datalist2)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def variance_levene(self, datalist1, datalist2, user_p):
-        result = stats.levene(datalist1, datalist2)
-        judge = bool(result[1] > user_p)
+    def variance_levene(self):
+        result = stats.levene(self.datalist1, self.datalist2)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def ttest_student_rel(self, datalist1, datalist2, user_p):
-        result = stats.ttest_rel(datalist1, datalist2)
-        judge = bool(result[1] > user_p)
+    def ttest_student_rel(self):
+        result = stats.ttest_rel(self.datalist1, self.datalist2)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def ttest_student_ind(self, datalist1, datalist2, user_p):
-        result = stats.ttest_ind(datalist1, datalist2)
-        judge = bool(result[1] > user_p)
+    def ttest_student_ind(self):
+        result = stats.ttest_ind(self.datalist1, self.datalist2)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def ttest_welch(self, datalist1, datalist2, user_p):
-        result = stats.ttest_ind(datalist1, datalist2, equal_var=False)
-        judge = bool(result[1] > user_p)
+    def ttest_welch(self):
+        result = stats.ttest_ind(self.datalist1, self.datalist2, equal_var=False)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def mann(self, datalist1, datalist2, user_p):
-        result = stats.mannwhitneyu(datalist1, datalist2, alternative='two-sided')
-        judge = bool(result[1] > user_p)
+    def mann(self):
+        result = stats.mannwhitneyu(self.datalist1, self.datalist2, alternative='two-sided')
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
 
 
-    def wilcoxon_signed(self, datalist1, datalist2, user_p):
-        result = stats.wilcoxon(datalist1, datalist2, correction=True)
-        judge = bool(result[1] > user_p)
+    def wilcoxon_signed(self):
+        result = stats.wilcoxon(self.datalist1, self.datalist2, correction=True)
+        judge = bool(result[1] > self.user_p)
         return judge, result[1]
+
+
+if __name__ == '__main__':
+    SdJudge.is_normal_dist(SdJudge.ask())
