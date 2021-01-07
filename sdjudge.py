@@ -5,14 +5,14 @@ from statistics import stdev
 from scipy import stats
 import numpy as np
 import pandas as pd
-import decimal
 
 
 class SdJudge:
-    def __init__(self, name, data1, data2, user_p, is_rel):
+    def __init__(self, name, data1, data2, user_p):
         self.name = name
-        self.data1 = pd.read_csv(name + '.csv').loc[:, data1]
-        self.data2 = pd.read_csv(name + '.csv').loc[:, data2]
+        csv = pd.read_csv(name + '.csv')
+        self.data1 = csv.loc[:, data1]
+        self.data2 = csv.loc[:, data2]
         self.user_p = user_p
         self.datalist1 = list(self.data1.values.flatten())
         self.datalist2 = list(self.data2.values.flatten())
@@ -29,7 +29,7 @@ class SdJudge:
         print(pd.read_csv(filename + '.csv').head())
 
         while True:
-            is_rel = input('is it relative?[[y]/n]: ')
+            is_rel = input('is it independent?[[y]/n]: ')
             if is_rel == 'y' or is_rel == 'n' or is_rel == '':
                 break
             else:
@@ -39,7 +39,6 @@ class SdJudge:
                 input('data row name?: '),
                 input('data2 row name?: ') or 'none',
                 pvalue,
-                is_rel
                 ), is_rel
 
 
@@ -51,6 +50,10 @@ class SdJudge:
         judge_2 = bool(result_2[1] > self.user_p)
         judge = bool(judge_1 and judge_2) # if judge_1 and judge_2 is true, judge is true. otherwise False.
         return judge_1, judge_2, judge, result_1[1], result_2[1]
+
+    def corr(self):
+        x = stats.pearsonr(self.datalist1, self.datalist2)
+        return x
 
 
     def variance_bartlett(self):
@@ -99,16 +102,17 @@ if __name__ == '__main__':
     usr = SdJudge.ask()
     norm_result = SdJudge.is_normal_dist(usr[0])
     print('data1 is normal distribution: {}, p={} \ndata2 is normal distribution: {}, p={}'.format(norm_result[0], norm_result[3], norm_result[1], norm_result[4]))
+    print(SdJudge.corr(usr[0]))
     if norm_result[2] is True:
         bart_result = SdJudge.variance_bartlett(usr[0])
         print('Bartlett normal dist. kai2zero : {}, p={}'.format(bart_result[0], bart_result[1]))
         if  usr[1]== 'y' or usr[1] == '':
             if bart_result[0] is True:
                 t_ind_result = SdJudge.ttest_student_ind(usr[0])
-                print('t test indivisual student : {}, p={}'.format(t_ind_result[0], t_ind_result[1]))
+                print('t test independent student : {}, p={}'.format(t_ind_result[0], t_ind_result[1]))
             else:
                 t_welch_result = SdJudge.ttest_welch(usr[0])
-                print('t test indivisual welch : {}, p={}'.format(t_welch_result[0], t_welch_result[1]))
+                print('t test independent welch : {}, p={}'.format(t_welch_result[0], t_welch_result[1]))
         elif usr[1] == 'n':
             t_rel_result = SdJudge.ttest_student_rel(usr[0])
             print('t test relative : {}, p={}'.format(t_rel_result[0], t_rel_result[1]))
